@@ -1,0 +1,286 @@
+import React, { useEffect, useState } from "react";
+import CategoryScroller from "../Components/CategoryScroller";
+import Carousel from "../Components/rtl_carousel";
+// import ProductCard from "../Components/productCard";
+// import products from "../Data/products.json";
+// import products from "../Data/kitli.json";
+import { SearchBar } from "../Components/searchBar";
+import ProductCard from "../Components/prod-card";
+import { useSearchParams } from "react-router-dom";
+import { Constants } from "../api/env";
+
+const DEFAULT_ITEMS = [
+  {
+    label: "Fashion",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/f03c562321e764bb.jpg?q=80",
+    alt: "Fashion",
+  },
+
+  {
+    label: "Appliances",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/51b0d5f9aabc2462.jpg?q=80",
+    alt: "Appliances",
+  },
+  {
+    label: "Beauty",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/d31d524f681630af.jpg?q=80",
+    alt: "Beauty",
+  },
+  {
+    label: "Electronics",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/a080ac3397f3612d.png?q=80",
+    alt: "Electronics",
+  },
+  {
+    label: "Toys, Baby...",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/d4d87d1307cd2a29.jpg?q=80",
+    alt: "Toys, Baby...",
+  },
+
+  {
+    label: "Mobiles",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/a6189afdd765a687.jpg?q=80",
+    alt: "Mobiles",
+  },
+  {
+    label: "Food & Health",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/f9ebd80a4825f28e.jpg?q=80",
+    alt: "Food & Health",
+  },
+  {
+    label: "Home & Kitchen",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/506347d817d14025.jpg?q=80",
+    alt: "Home & Kitchen",
+  },
+
+  {
+    label: "Furniture",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/9be859f78d39cc22.jpg?q=80",
+    alt: "Furniture",
+  },
+  {
+    label: "Sports",
+    src: "https://rukminim2.flixcart.com/fk-p-flap/116/116/image/c632b839ac6d183e.jpg?q=80",
+    alt: "Sports",
+  },
+];
+
+const HeroImage = [
+  "https://rukminim2.flixcart.com/fk-p-flap/3240/1580/image/d9bce7fbec650272.jpg?q=90",
+
+  "https://rukminim2.flixcart.com/fk-p-flap/1580/770/image/4db52c66f1b3734e.jpeg?q=80",
+  "https://rukminim2.flixcart.com/fk-p-flap/764/372/image/abbcd1baf1b1d2a7.jpg?q=80",
+  "https://rukminim2.flixcart.com/fk-p-flap/764/372/image/53a669cfe955808b.jpg?q=80",
+
+  "https://rukminim2.flixcart.com/fk-p-flap/1580/770/image/b6f5aa620f2b7163.jpeg?q=80",
+  "https://rukminim2.flixcart.com/fk-p-flap/1580/770/image/8ef545cbbf40d710.jpeg?q=80",
+  "https://rukminim2.flixcart.com/fk-p-flap/1580/770/image/0506364bdd1ca808.jpeg?q=80",
+
+  "https://rukminim2.flixcart.com/fk-p-flap/1580/770/image/fe5641546059d994.png?q=80",
+  "https://rukminim2.flixcart.com/fk-p-flap/1580/770/image/470239ac20669b63.jpg?q=80",
+  "https://rukminim2.flixcart.com/fk-p-flap/1580/770/image/11e23ebaf776af04.jpeg?q=80",
+  "https://rukminim2.flixcart.com/fk-p-flap/1580/770/image/71668bcc21ef73c7.jpg?q=80",
+];
+
+function convertAmazonToMyntraFormat(data) {
+  // --- Convert price ---
+  const price = {
+    selling_price: Number(data?.price_details?.price || 0),
+    mrp: Number(data?.price_details?.mrp || 0),
+    discount_percent: data?.price_details?.savings_percentage
+      ? Number(
+          data.price_details.savings_percentage
+            .replace("%", "")
+            .replace("-", ""),
+        )
+      : null,
+  };
+
+  return {
+    brand: data?.product_details?.brand || null,
+    name: data?.product_details?.title || null,
+
+    rating: Number(data?.product_details?.rating || 0),
+    rating_count: Number(data?.product_details?.reviews || 0),
+
+    price,
+
+    // Amazon has no size info
+    sizes: [],
+
+    delivery: {
+      pincode: null,
+      name: null,
+      estimated_delivery: null,
+      pay_on_delivery:
+        data?.shop_with_confidence?.some((x) => x.id === "PAY_ON_DELIVERY") ||
+        false,
+      returns:
+        data?.shop_with_confidence?.find((x) => x.id === "RETURNS_POLICY")
+          ?.label || null,
+    },
+
+    badges:
+      data?.top_highlights?.product_overview?.map(
+        (item) => `${item.label}: ${item.value}`,
+      ) || [],
+
+    offers: [],
+
+    // Convert images array to Myntra format
+    images:
+      data?.images?.map((src, i) => ({
+        id: i + 1,
+        type: "img",
+        src,
+        class: "product-item-image",
+        alt: data?.product_details?.title || "Product Image",
+      })) || [],
+
+    imgdata: {
+      total_images: data?.images?.length || 0,
+      images:
+        data?.images?.map((src, i) => ({
+          id: i + 1,
+          type: "img",
+          src,
+          class: "product-item-image",
+          alt: data?.product_details?.title || "Product Image",
+        })) || [],
+      video: null,
+    },
+
+    specifications: Object.fromEntries(
+      (data?.specifications?.item_details || []).map((item) => [
+        item.label,
+        item.value,
+      ]),
+    ),
+
+    material_care: data?.top_highlights?.feature_bullets?.join(" ") || null,
+
+    ratings_breakdown: [],
+
+    priceObj: {
+      discount: price.discount_percent,
+      mrp: price.mrp,
+      selling_price: price.selling_price,
+    },
+
+    id: crypto.randomUUID(),
+  };
+}
+
+const AllProducts = () => {
+  const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("category");
+  const [categoryDetails, setCategoryDetails] = useState();
+
+  const load = async () => {
+    const res = await fetch(`${Constants.base}/api/categories.php`);
+    const data = await res.json();
+    setCategoryDetails(data.find((item) => item._id == category));
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const fetchProducts = async () => {
+    const res = await fetch(`${Constants.base}/api/products.php`);
+    const data = await res.json();
+    const Arra = [];
+
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+
+      console.log(element);
+
+      const obj = {
+        ...element,
+        categoryObj: { ...element.category },
+        id: element.id,
+        name: element.name,
+        rating: null,
+        rating_count: null,
+        sizes: [
+          {
+            size: "Onesize",
+            inventory_left: null,
+            measurement: null,
+          },
+        ],
+        imgdata: {
+          total_images: 1,
+          images: element.imgdata.images.map((item) => {
+            return {
+              id: 1,
+              type: "img",
+              src: Constants.base + item.src,
+              class: null,
+              alt: null,
+            };
+          }),
+          video: null,
+        },
+
+        category: element?.category?.name,
+      };
+      Arra.push(obj);
+    }
+
+    if (category) {
+      setAllProducts(Arra.filter((item) => item.categoryId == category));
+      setProducts(data.filter((item) => item.categoryId == category));
+    } else {
+      setAllProducts(Arra);
+      setProducts(data);
+    }
+  };
+
+  console.log(allProducts, products);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [category]);
+
+  return (
+    <div className="">
+      <div>
+        <SearchBar />
+      </div>
+
+      <div className="py-6 pb-0">
+        <CategoryScroller items={DEFAULT_ITEMS} />
+      </div>
+      <div className="p-3">
+        <Carousel
+          animate={true}
+          images={HeroImage}
+          dotsDistance="-10px"
+          styles={{
+            height: "186px",
+            borderRadius: "10px",
+          }}
+        />
+      </div>
+      <div className="bg-[#fff] p-4 !mt-6">
+        <p className="font-bold text-[20px] text-center">Live Sale end soon</p>
+      </div>
+
+      <div className="fl;ex w-full flex-wrap justify-center !mt-2 gap-4 grid grid-cols-2">
+        {allProducts.length &&
+          allProducts.map((product, index) => (
+            <div key={index} className="css-175oi2r r-18u37iz p-[8px_16px]">
+              <ProductCard product={product} fromDetails />
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+};
+
+export default AllProducts;
