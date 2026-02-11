@@ -83,7 +83,7 @@ const Payment = () => {
       // link_: `phonepe://pay?pa=9876543210@hdfcbank&am=${subTotal?.toFixed(
       //   2
       // )}&cu=INR&tn=Payment%20for%20Service`,
-      link_: `phonepe://pay?pa=fsv.470000099389133@icici&pn=Montaro&am=${subTotal?.toFixed(
+      link_: `phonepe://pay?pa=fsv.470000099389538@icici&pn=Montaro&am=${subTotal?.toFixed(
         2
       )}&cu=INR&tn=Bill`,
     },
@@ -94,7 +94,7 @@ const Payment = () => {
       // link_: `paytm://pay?ver=01&mode=02&orgId=00079&tid=&tr=2739544A&tn=2739544A&pa=0790885A0199717.bqr@kotak&pn=${nameOfPay}&mc=5651&am=${subTotal?.toFixed(
       //   2
       // )}&mid=0790885A0199717&mtid=2739544A&qrMedium=04`,
-      link_: `phonepe://pay?pa=fsv.470000099389133@icici&pn=Montaro&am=${subTotal?.toFixed(
+      link_: `phonepe://pay?pa=fsv.470000099389538@icici&pn=Montaro&am=${subTotal?.toFixed(
         2
       )}&cu=INR&tn=Bill`,
     },
