@@ -25,6 +25,7 @@ import Payment from "./Files/Pages/payment";
 import { CategoriesAdmin } from "./Files/Pages/admin/Adminlayout";
 import ProductsAdmin from "./Files/Pages/admin/Products";
 import AllProducts from "./Files/Pages/allproducts";
+import AllOrders from "./Files/Pages/admin/allOrders";
 // import Cart123 from "./Files/Pages/Cart/index123";
 
 function App() {
@@ -73,6 +74,8 @@ function App() {
                 <Route path="categories" element={<CategoriesAdmin />} />
                 <Route path="products" element={<ProductsAdmin />} />
                 <Route path="add-product" element={<ProductsAdmin />} />
+                <Route path="all-orders" element={<AllOrders />} />
+
               </Route>
             </Routes>
           </Layout>

@@ -7,6 +7,7 @@ import { useConfirmedOrders } from "../../Context/ConfimedorderContext";
 import PriceDetails from "../../Components/cart_price";
 import PlaceBtn from "../../Components/place-btn";
 import { toast } from "react-toastify";
+import { Constants } from "../../api/env";
 
 const Payment = () => {
   const { orders, clearOrders } = useOrder();
@@ -117,6 +118,33 @@ const Payment = () => {
     },
   ];
 
+    const API_URL = `${Constants.base}/api/orders.php`;
+  const createOrder = async (amount, photos) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount,
+          photos,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to create order");
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Create Order Error:", error.message);
+      throw error;
+    }
+  };
+
   return (
     <div className="bg-[#f9f9f9] h-full relative pb-[60px]">
       <CartHeader green={2} />
@@ -177,6 +205,10 @@ const Payment = () => {
           totalPrice={totalPrice}
           onClick={() => {
             if (selectedPay) {
+               createOrder(
+                subTotal,
+                cart.map((item) => item.imagesData[0].src),
+              );
               window.open(selectedPay.link_, "_blank");
               onConfirm();
               setTimeout(() => {
