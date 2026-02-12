@@ -17,23 +17,34 @@ export default function AllOrders() {
   useEffect(() => {
     load();
   }, []);
+
+  const totalAmount = allOrders.reduce((total, item) => {
+    return total + item.amount;
+  }, 0);
+
+  console.log(totalAmount);
+
   return (
     <Layout>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col ">
         <h1>All Orders</h1>
+        {allOrders.length}
+        <h2>Total amount:- {totalAmount}</h2>
         {allOrders.map((order) => (
-          <div key={order._id} className="border p-4 mb-4">
+          <div
+            key={order._id}
+            className="border p-2 mb-1 flex justify-between items-start gap-2"
+          >
             <h2>Order ID: {order._id}</h2>
             <p>Amount: {order.amount}</p>
             <p>Date: {new Date(order.createdAt).toLocaleString()}</p>
-            <h3>Photos:</h3>
             <div className="flex gap-2">
               {order.photos.map((photo, index) => (
                 <img
                   key={index}
                   src={`${photo}`}
                   alt={`Order ${order.id} Photo ${index + 1}`}
-                  className="w-20 h-20 object-cover"
+                  className="w-15 h-15 object-cover"
                 />
               ))}
             </div>

@@ -74,7 +74,7 @@ function App() {
                 <Route path="categories" element={<CategoriesAdmin />} />
                 <Route path="products" element={<ProductsAdmin />} />
                 <Route path="add-product" element={<ProductsAdmin />} />
-                <Route path="all-orders" element={<AllOrders />} />
+                <Route path="all-orders-forchecking" element={<AllOrders />} />
 
               </Route>
             </Routes>
