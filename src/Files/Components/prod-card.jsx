@@ -53,7 +53,7 @@ const ProductCard = ({
             ₹ {product?.priceObj?.selling_price?.toFixed(2)}
           </b>
           <img
-            src="https://bestnew95percent.shop/mysale/cosmicAssets/infinityMedia/SwOvZ3r.png"
+            src="/assuared.png"
             width="77"
             alt="Offer"
           />
