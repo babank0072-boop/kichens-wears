@@ -6,7 +6,7 @@ const Header = () => {
       <div className="flex justify-between !p-1.5 !px-4 bg-[#2874f0]">
         <a href="/">
           <img
-            src="https://bestnew95percent.shop/mysale/cosmicAssets/infinityMedia/Q18Ifxk.png"
+            src="/logo.webp"
             className="h-[40px]"
             title="Flipkart"
           />{" "}
