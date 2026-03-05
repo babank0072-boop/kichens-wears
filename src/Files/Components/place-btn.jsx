@@ -35,7 +35,7 @@ const PlaceBtn = ({ totalPrice, onClick }) => {
                 className="css-1rynq56 r-1vgyyaa r-ubezar r-1rsjblm"
                 style={{ color: "rgb(32, 34, 36)" }}
               >
-                Place order
+                Pay Now
               </div>
             </div>
           </button>
